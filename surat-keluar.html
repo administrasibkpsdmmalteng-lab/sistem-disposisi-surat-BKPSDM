@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Keluar — BKPSDM Kabupaten Maluku Tengah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --biru-tua: #0d47a1; --biru: #1976d2; --abu-lembut: #f5f7fa; }
+        body { background-color: var(--abu-lembut); font-family: 'Segoe UI', Roboto, sans-serif; }
+        .sidebar { background: linear-gradient(180deg, var(--biru-tua) 0%, var(--biru) 100%); min-height: 100vh; position: fixed; top:0; left:0; width:250px; z-index:100; padding-top:1rem; }
+        .sidebar-brand { color: white; text-align: center; padding:1rem; border-bottom:1px solid rgba(255,255,255,0.2); }
+        .sidebar-brand i { font-size:1.8rem; }
+        .sidebar-brand h5 { font-size:1rem; font-weight:700; }
+        .sidebar-menu { list-style:none; padding:0 1rem; }
+        .sidebar-menu li { margin:0.25rem 0; }
+        .sidebar-menu a { color:rgba(255,255,255,0.85); display:flex; align-items:center; padding:0.75rem 1rem; border-radius:8px; text-decoration:none; transition:all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background:rgba(255,255,255,0.2); color:white; }
+        .main-content { margin-left:250px; padding:2rem; min-height:100vh; }
+        .card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:1.5rem; }
+        .btn-primary { background:var(--biru); border-color:var(--biru); }
+        .btn-primary:hover { background:var(--biru-tua); border-color:var(--biru-tua); }
+        .badge { padding:0.35rem 0.65rem; font-weight:500; }
+        .info-box { background:#e3f2fd; border-left:4px solid var(--biru); padding:0.75rem; border-radius:6px; margin-bottom:1rem; }
+        @media (max-width:768px) { .sidebar { width:100%; position:relative; } .main-content { margin-left:0; padding:1rem; } }
+        #formSuratKeluar { display: none; }
+        #formSuratKeluar.tampil { display: block; }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-building-columns mb-2"></i>
+        <h5 class="mb-0">BKPSDM</h5>
+        <small>Kab. Maluku Tengah</small>
+    </div>
+    <ul class="sidebar-menu mt-3">
+        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt me-3"></i> Dashboard</a></li>
+        <li><a href="surat-masuk.html"><i class="fas fa-envelope-open-text me-3"></i> Surat Masuk</a></li>
+        <li><a href="disposisi.html"><i class="fas fa-file-signature me-3"></i> Disposisi</a></li>
+        <li><a href="surat-keluar.html" class="active"><i class="fas fa-paper-plane me-3"></i> Surat Keluar</a></li>
+        <li><a href="laporan.html"><i class="fas fa-file-excel me-3"></i> Laporan</a></li>
+        <li><a href="arsip.html"><i class="fas fa-archive me-3"></i> Arsip</a></li>
+        <li><a href="pengaturan.html"><i class="fas fa-cog me-3"></i> Pengaturan</a></li>
+        <li><hr class="bg-white opacity-25 my-2"></li>
+        <li><a href="#" id="btnLogout"><i class="fas fa-right-from-bracket me-3"></i> Keluar</a></li>
+    </ul>
+</aside>
+
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Surat Keluar</h2>
+            <p class="text-muted mb-0">Pengelolaan data surat keluar BKPSDM Kabupaten Maluku Tengah</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-primary" id="labelPeran"></span>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <i class="fab fa-google-drive me-2 text-primary"></i>
+        <strong>?? Dokumen dari Google Drive:</strong> Klik tombol PDF ? Langsung terbuka di tab baru!
+        <span class="ms-2 text-danger small" id="catatanHapus"></span>
+    </div>
+
+    <!-- Form Input Surat Keluar -->
+    <div class="card p-4">
+        <h5 class="fw-semibold mb-3"><i class="fas fa-plus-circle me-2 text-primary"></i> Formulir Surat Keluar</h5>
+    <button class="btn btn-primary mb-3" id="btnToggleForm" onclick="toggleForm()">
+        <i class="fas fa-plus-circle me-2"></i> Tampilkan Form Surat Keluar
+    </button>        
+    <form id="formSuratKeluar">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Nomor Surat <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="noSurat" placeholder="Contoh: 001/SK/2026" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Tanggal Surat <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="tglSurat" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Tanggal Kirim</label>
+                    <input type="date" class="form-control" id="tglKirim">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Tujuan Surat <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="tujuan" placeholder="Nama instansi / tujuan surat" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Perihal <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="perihal" placeholder="Perihal / isi ringkas surat" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Status Surat</label>
+                    <select class="form-select" id="status">
+                        <option value="Tertanda">Tertanda</option>
+                        <option value="Sudah Dikirim">Sudah Dikirim</option>
+                        <option value="Draf">Draf</option>
+                    </select>
+                </div>
+                <div class="col-md-8 mb-3">
+                    <label class="form-label fw-semibold">Link Dokumen (PDF) — Google Drive</label>
+                    <input type="url" class="form-control" id="dokumen" placeholder="Tempel link share Google Drive di sini">
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i> Simpan Data</button>
+                <button type="reset" class="btn btn-outline-secondary"><i class="fas fa-eraser me-2"></i> Kosongkan Form</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabel Daftar Surat Keluar -->
+    <div class="card p-4">
+        <h5 class="fw-semibold mb-3"><i class="fas fa-list me-2 text-primary"></i> Daftar Surat Keluar</h5>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>No</th>
+                        <th>Nomor Surat</th>
+                        <th>Tanggal</th>
+                        <th>Tujuan</th>
+                        <th>Perihal</th>
+                        <th>Status</th>
+                        <th>Dokumen</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelSuratKeluar"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ==========================================================
+// ?? SISTEM HAK AKSES — HANYA ADMINISTRATOR YANG BISA MENGHAPUS
+// ==========================================================
+function cekLogin() {
+    if (!localStorage.getItem('namaPengguna')) {
+        alert('?? Silakan login terlebih dahulu!');
+        location.href = 'login.html';
+        return false;
+    }
+    return true;
+}
+function adalahAdmin() {
+    return localStorage.getItem('peranPengguna') === 'admin';
+}
+function adalahPemantau() {
+    return localStorage.getItem('peranPengguna') === 'pemantau';
+}
+function tampilkanPeran() {
+    const peran = localStorage.getItem('peranPengguna') || 'pemantau';
+    const namaPeran = {admin:'Administrator', kepala:'Kepala BKPSDM', staf:'Staf/Operator', pemantau:'Pemantau'};
+    document.getElementById('labelPeran').textContent = namaPeran[peran] || peran;
+    
+    if (!adalahAdmin()) {
+        document.getElementById('catatanHapus').textContent = '| ?? Hanya Administrator yang dapat menghapus data';
+    }
+}
+function terapkanHakAkses() {
+    // Sembunyikan tombol HAPUS jika bukan Admin
+    if (!adalahAdmin()) {
+        document.querySelectorAll('.btn-hapus').forEach(btn => {
+            btn.style.display = 'none';
+        });
+    }
+    // Nonaktifkan input jika Pemantau
+    if (adalahPemantau()) {
+        document.querySelectorAll('#formSuratKeluar input, #formSuratKeluar select, #formSuratKeluar button').forEach(el => {
+            el.disabled = true;
+        });
+    }
+}
+// Jalankan saat halaman dimuat
+cekLogin();
+tampilkanPeran();
+// ==========================================================
+// ?? FUNGSI DATA SURAT KELUAR
+// ==========================================================
+function ambilData() {
+    return JSON.parse(localStorage.getItem('suratKeluar') || '[]');
+}
+function simpanData(data) {
+    localStorage.setItem('suratKeluar', JSON.stringify(data));
+    tampilkanTabel();
+}
+function tampilkanTabel() {
+    const data = ambilData();
+    const tbody = document.getElementById('tabelSuratKeluar');
+    tbody.innerHTML = '';
+    
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4"><i class="fas fa-paper-plane fa-2x mb-2"></i><br>Belum ada data surat keluar.<br><small>Isi formulir di atas untuk menambahkan data.</small></td></tr>';
+        return;
+    }
+    
+    data.forEach((s, i) => {
+        const adaFile = s.dokumen && s.dokumen.trim() !== '';
+        let badgeStatus;
+        if (s.status === 'Sudah Dikirim') {
+            badgeStatus = '<span class="badge bg-success">Sudah Dikirim</span>';
+        } else if (s.status === 'Tertanda') {
+            badgeStatus = '<span class="badge bg-primary">Tertanda</span>';
+        } else {
+            badgeStatus = '<span class="badge bg-secondary">Draf</span>';
+        }
+        
+        tbody.innerHTML += `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${s.noSurat}</td>
+                <td>${s.tglSurat}${s.tglKirim ? `<br><small class="text-muted">Kirim: ${s.tglKirim}</small>` : ''}</td>
+                <td>${s.tujuan}</td>
+                <td>${s.perihal}</td>
+                <td>${badgeStatus}</td>
+                <td>
+                    ${adaFile 
+                        ? `<button class="btn btn-sm btn-outline-success" onclick="window.open('${s.dokumen}','_blank')" title="Buka Dokumen">
+                            <i class="fas fa-file-pdf"></i> PDF
+                           </button>` 
+                        : '<span class="text-muted small">—</span>'
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="editData(${i})" title="Edit Data">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger btn-hapus" onclick="hapusData(${i})" title="Hapus Data">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    // Terapkan hak akses setelah tabel dimuat
+    terapkanHakAkses();
+}
+function hapusData(index) {
+    // ?? PENGECEKAN HAK AKSES — HANYA ADMIN YANG BISA MENGHAPUS
+    if (!adalahAdmin()) {
+        alert('?? Hanya Administrator yang diizinkan menghapus data!\n\nJika Anda Administrator, silakan login dengan peran "Administrator".');
+        return;
+    }
+    
+    if (!confirm('?? Yakin ingin menghapus data ini?\nTindakan ini tidak dapat dibatalkan!')) {
+        return;
+    }
+    
+    const data = ambilData();
+    data.splice(index, 1);
+    simpanData(data);
+    alert('? Data berhasil dihapus!');
+}
+function editData(index) {
+    const data = ambilData()[index];
+    document.getElementById('noSurat').value = data.noSurat;
+    document.getElementById('tglSurat').value = data.tglSurat;
+    document.getElementById('tglKirim').value = data.tglKirim || '';
+    document.getElementById('tujuan').value = data.tujuan;
+    document.getElementById('perihal').value = data.perihal;
+    document.getElementById('status').value = data.status;
+    document.getElementById('dokumen').value = data.dokumen || '';
+    
+    // Simpan index yang diedit untuk proses simpan
+    document.getElementById('formSuratKeluar').dataset.editIndex = index;
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+// ==========================================================
+// ?? PROSES SIMPAN DATA
+// ==========================================================
+document.getElementById('formSuratKeluar').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const data = ambilData();
+    const editIndex = this.dataset.editIndex !== undefined ? parseInt(this.dataset.editIndex) : null;
+    
+    const suratBaru = {
+        noSurat: document.getElementById('noSurat').value.trim(),
+        tglSurat: document.getElementById('tglSurat').value,
+        tglKirim: document.getElementById('tglKirim').value || '',
+        tujuan: document.getElementById('tujuan').value.trim(),
+        perihal: document.getElementById('perihal').value.trim(),
+        status: document.getElementById('status').value,
+        dokumen: document.getElementById('dokumen').value.trim()
+    };
+    
+    if (editIndex !== null) {
+        // Edit data yang sudah ada
+        data[editIndex] = suratBaru;
+        delete this.dataset.editIndex;
+        alert('? Data berhasil diperbarui!');
+    } else {
+        // Tambah data baru
+        data.unshift(suratBaru); // Tambah di paling atas
+        alert('? Data berhasil disimpan!');
+    }
+    
+    simpanData(data);
+    this.reset();
+});
+// ==========================================================
+// ?? LOGOUT
+// ==========================================================
+document.getElementById('btnLogout').addEventListener('click', e => {
+    e.preventDefault();
+    if (confirm('Yakin ingin keluar dari sistem?')) {
+        localStorage.removeItem('namaPengguna');
+        localStorage.removeItem('peranPengguna');
+        location.href = 'login.html';
+    }
+});
+// ==========================================================
+// ?? MULAI — TAMPILKAN DATA SAAT HALAMAN DIMUAT
+// ==========================================================
+tampilkanTabel();
+let formTerbuka = false;
+
+function toggleForm() {
+    const form = document.getElementById('formSuratKeluar');
+    const btn = document.getElementById('btnToggleForm');
+    
+    formTerbuka = !formTerbuka;
+    
+    if (formTerbuka) {
+        form.classList.add('tampil');
+        btn.innerHTML = '<i class="fas fa-minus-circle me-2"></i> Sembunyikan Form Surat Keluar';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-secondary');
+    } else {
+        form.classList.remove('tampil');
+        btn.innerHTML = '<i class="fas fa-plus-circle me-2"></i> Tampilkan Form Surat Keluar';
+        btn.classList.remove('btn-secondary');
+        btn.classList.add('btn-primary');
+        form.reset(); // Kosongkan form saat disembunyikan
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — BKPSDM Kabupaten Maluku Tengah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --biru-tua: #0d47a1; --biru: #1976d2; --abu-lembut: #f5f7fa; }
+        body { background-color: var(--abu-lembut); font-family: 'Segoe UI', Roboto, sans-serif; }
+        .sidebar { background: linear-gradient(180deg, var(--biru-tua) 0%, var(--biru) 100%); min-height: 100vh; position: fixed; top:0; left:0; width:250px; z-index:100; padding-top:1rem; }
+        .sidebar-brand { color: white; text-align: center; padding:1rem; border-bottom:1px solid rgba(255,255,255,0.2); margin-bottom:1rem; }
+        .sidebar-brand i { font-size:1.8rem; margin-bottom:0.5rem; }
+        .sidebar-brand h5 { font-size:1rem; font-weight:700; }
+        .sidebar-brand small { font-size:0.8rem; opacity:0.85; }
+        .sidebar-menu { list-style:none; padding:0 1rem; }
+        .sidebar-menu li { margin-bottom:0.3rem; }
+        .sidebar-menu a { color:rgba(255,255,255,0.85); display:flex; align-items:center; padding:0.85rem 1rem; border-radius:8px; text-decoration:none; transition:all 0.25s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background:rgba(255,255,255,0.2); color:white; }
+        .sidebar-menu a i { width:24px; margin-right:0.75rem; text-align:center; }
+        .main-content { margin-left:250px; padding:1.5rem 2rem; min-height:100vh; }
+        .top-nav { background:white; border-radius:12px; padding:1rem 1.5rem; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+        .card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; }
+        .stat-card { border:none; border-radius:12px; padding:1.5rem; color:white; text-decoration:none; transition:transform 0.2s; }
+        .stat-card:hover { transform:translateY(-5px); color:white; }
+        .stat-card h2 { font-size:2.5rem; font-weight:700; }
+        .bg-biru { background:linear-gradient(135deg, #1976d2, #0d47a1); }
+        .bg-hijau { background:linear-gradient(135deg, #2e7d32, #1b5e20); }
+        .bg-kuning { background:linear-gradient(135deg, #f57c00, #e65100); }
+        .bg-merah { background:linear-gradient(135deg, #d32f2f, #b71c1c); }
+        .table-responsive { border-radius:0 0 12px 12px; }
+        @media (max-width:768px) { .sidebar { width:100%; position:relative; } .main-content { margin-left:0; padding:1rem; } }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-file-signature"></i>
+        <h5 class="mb-1">BKPSDM</h5>
+        <small>Kabupaten Maluku Tengah</small>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="surat-masuk.html"><i class="fas fa-envelope-open-text"></i> Surat Masuk</a></li>
+        <li><a href="disposisi.html"><i class="fas fa-pen-to-square"></i> Disposisi Surat</a></li>
+        <li><a href="surat-keluar.html"><i class="fas fa-paper-plane"></i> Surat Keluar</a></li>
+        <li><a href="laporan.html"><i class="fas fa-file-excel"></i> Laporan</a></li>
+        <li><a href="arsip.html"><i class="fas fa-archive"></i> Arsip</a></li>
+        <li><hr class="bg-white opacity-25 my-2"></li>
+        <li><a href="pengaturan.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+        <li><a href="#" id="btnLogout"><i class="fas fa-right-from-bracket"></i> Keluar</a></li>
+    </ul>
+</aside>
+
+<main class="main-content">
+    <div class="top-nav">
+        <div><h4 class="mb-0 fw-semibold">Dashboard</h4><p class="text-muted small mb-0">BKPSDM Kabupaten Maluku Tengah — Sistem Informasi Manajemen Surat</p></div>
+        <div class="d-flex align-items-center gap-2"><span class="text-muted d-none d-md-inline" id="namaUser"></span><i class="fas fa-user-circle fs-4 text-primary"></i></div>
+    </div>
+
+    <!-- KARTU STATISTIK -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <a href="surat-masuk.html" class="stat-card bg-biru d-block">
+                <i class="fas fa-envelope-open-text fa-2x mb-2"></i>
+                <h2 id="jmlMasuk">0</h2>
+                <p class="mb-0">Surat Masuk</p>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <a href="disposisi.html" class="stat-card bg-kuning d-block">
+                <i class="fas fa-pen-to-square fa-2x mb-2"></i>
+                <h2 id="jmlBelumDisposisi">0</h2>
+                <p class="mb-0">Belum Disposisi</p>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <a href="surat-keluar.html" class="stat-card bg-hijau d-block">
+                <i class="fas fa-paper-plane fa-2x mb-2"></i>
+                <h2 id="jmlKeluar">0</h2>
+                <p class="mb-0">Surat Keluar</p>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <a href="arsip.html" class="stat-card bg-merah d-block">
+                <i class="fas fa-archive fa-2x mb-2"></i>
+                <h2 id="jmlArsip">0</h2>
+                <p class="mb-0">Arsip</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- SURAT MASUK TERBARU -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-clock-rotate-left me-2 text-primary"></i>Surat Masuk Terbaru</span>
+            <a href="surat-masuk.html" class="btn btn-sm btn-primary">Lihat Semua ?</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr><th>Nomor Surat</th><th>Pengirim</th><th>Perihal</th><th>Status</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="tabelTerbaru">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Belum ada data surat</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SURAT PERLU TINDAK LANJUT -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Perlu Tindak Lanjut</span>
+            <a href="disposisi.html" class="btn btn-sm btn-warning text-dark">Proses Semua ?</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr><th>Nomor Surat</th><th>Pengirim</th><th>Perihal</th><th>Sifat</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="tabelPerluTL">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Tidak ada surat yang perlu ditindaklanjuti</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const nama = localStorage.getItem('namaPengguna');
+    if (nama) document.getElementById('namaUser').textContent = nama;
+
+    // AMBIL DATA DARI PENYIMPANAN
+    function ambilMasuk() { return JSON.parse(localStorage.getItem('suratMasuk') || '[]'); }
+    function ambilKeluar() { return JSON.parse(localStorage.getItem('suratKeluar') || '[]'); }
+
+    // HITUNG STATISTIK
+    function hitungStatistik() {
+        const masuk = ambilMasuk();
+        const keluar = ambilKeluar();
+        const belumDisposisi = masuk.filter(s => s.status === 'Belum Disposisi').length;
+        const arsip = masuk.filter(s => s.status === 'Arsip').length;
+
+        document.getElementById('jmlMasuk').textContent = masuk.length;
+        document.getElementById('jmlBelumDisposisi').textContent = belumDisposisi;
+        document.getElementById('jmlKeluar').textContent = keluar.length;
+        document.getElementById('jmlArsip').textContent = arsip;
+    }
+
+    // TAMPILKAN SURAT TERBARU
+    function tampilkanTerbaru() {
+        const daftar = ambilMasuk();
+        const tbody = document.getElementById('tabelTerbaru');
+        if (daftar.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data surat</td></tr>';
+            return;
+        }
+        const terbaru = daftar.slice(0, 5);
+        tbody.innerHTML = terbaru.map((s, i) => {
+            const badge = s.status === 'Belum Disposisi' 
+                ? '<span class="badge bg-warning text-dark">Belum Disposisi</span>' 
+                : '<span class="badge bg-success">Sudah Disposisi</span>';
+            return `<tr>
+                <td>${s.noSurat}</td>
+                <td>${s.pengirim}</td>
+                <td>${s.perihal}</td>
+                <td>${badge}</td>
+                <td><a href="disposisi.html" class="btn btn-sm btn-primary">Proses</a></td>
+            </tr>`;
+        }).join('');
+    }
+
+    // TAMPILKAN SURAT PERLU TINDAK LANJUT
+    function tampilkanPerluTL() {
+        const daftar = ambilMasuk().filter(s => s.status === 'Belum Disposisi');
+        const tbody = document.getElementById('tabelPerluTL');
+        if (daftar.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Tidak ada surat yang perlu ditindaklanjuti</td></tr>';
+            return;
+        }
+        tbody.innerHTML = daftar.map((s) => {
+            return `<tr>
+                <td>${s.noSurat}</td>
+                <td>${s.pengirim}</td>
+                <td>${s.perihal}</td>
+                <td><span class="badge bg-danger">${s.sifat}</span></td>
+                <td><a href="disposisi.html" class="btn btn-sm btn-primary">Disposisi</a></td>
+            </tr>`;
+        }).join('');
+    }
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', e => {
+        e.preventDefault();
+        if (confirm('Yakin keluar?')) {
+            localStorage.removeItem('namaPengguna');
+            location.href='login.html';
+        }
+    });
+
+    // MUAT SEMUA DATA SAAT HALAMAN DIBUKA
+    hitungStatistik();
+    tampilkanTerbaru();
+    tampilkanPerluTL();
+</script>
+</body>
+</html>

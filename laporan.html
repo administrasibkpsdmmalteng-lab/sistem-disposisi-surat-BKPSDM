@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan — BKPSDM Kabupaten Maluku Tengah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --biru-tua: #0d47a1; --biru: #1976d2; --abu-lembut: #f5f7fa; }
+        body { background-color: var(--abu-lembut); font-family: 'Segoe UI', Roboto, sans-serif; }
+        .sidebar { background: linear-gradient(180deg, var(--biru-tua) 0%, var(--biru) 100%); min-height: 100vh; position: fixed; top:0; left:0; width:250px; z-index:100; padding-top:1rem; }
+        .sidebar-brand { color: white; text-align: center; padding:1rem; border-bottom:1px solid rgba(255,255,255,0.2); margin-bottom:1rem; }
+        .sidebar-brand i { font-size:1.8rem; margin-bottom:0.5rem; }
+        .sidebar-brand h5 { font-size:1rem; font-weight:700; }
+        .sidebar-brand small { font-size:0.8rem; opacity:0.85; }
+        .sidebar-menu { list-style:none; padding:0 1rem; }
+        .sidebar-menu li { margin-bottom:0.3rem; }
+        .sidebar-menu a { color:rgba(255,255,255,0.85); display:flex; align-items:center; padding:0.85rem 1rem; border-radius:8px; text-decoration:none; transition:all 0.25s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background:rgba(255,255,255,0.2); color:white; }
+        .sidebar-menu a i { width:24px; margin-right:0.75rem; text-align:center; }
+        .main-content { margin-left:250px; padding:1.5rem 2rem; min-height:100vh; }
+        .top-nav { background:white; border-radius:12px; padding:1rem 1.5rem; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+        .card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; }
+        .card-header { background:white; border-bottom:1px solid #eee; font-weight:600; }
+        .btn-primary { background:var(--biru); border-color:var(--biru); }
+        .btn-primary:hover { background:var(--biru-tua); border-color:var(--biru-tua); }
+        .laporan-preview { background:white; border:1px solid #ddd; border-radius:8px; padding:2rem; }
+        @media print {
+            .sidebar, .top-nav, .card-header .btn, .no-print { display:none !important; }
+            .main-content { margin-left:0; padding:0; }
+            .laporan-preview { border:none; }
+        }
+        @media (max-width:768px) { .sidebar { width:100%; position:relative; } .main-content { margin-left:0; padding:1rem; } }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-file-signature"></i>
+        <h5 class="mb-1">BKPSDM</h5>
+        <small>Kabupaten Maluku Tengah</small>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="surat-masuk.html"><i class="fas fa-envelope-open-text"></i> Surat Masuk</a></li>
+        <li><a href="disposisi.html"><i class="fas fa-pen-to-square"></i> Disposisi Surat</a></li>
+        <li><a href="surat-keluar.html"><i class="fas fa-paper-plane"></i> Surat Keluar</a></li>
+        <li><a href="laporan.html" class="active"><i class="fas fa-file-excel"></i> Laporan</a></li>
+        <li><a href="arsip.html"><i class="fas fa-archive"></i> Arsip</a></li>
+        <li><hr class="bg-white opacity-25 my-2"></li>
+        <li><a href="pengaturan.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+        <li><a href="#" id="btnLogout"><i class="fas fa-right-from-bracket"></i> Keluar</a></li>
+    </ul>
+</aside>
+
+<main class="main-content">
+    <div class="top-nav">
+        <div><h4 class="mb-0 fw-semibold">Laporan</h4><p class="text-muted small mb-0">BKPSDM Kabupaten Maluku Tengah — Cetak & unduh laporan surat</p></div>
+        <div class="d-flex align-items-center gap-2"><span class="text-muted d-none d-md-inline" id="namaUser"></span><i class="fas fa-user-circle fs-4 text-primary"></i></div>
+    </div>
+
+    <!-- FILTER LAPORAN -->
+    <div class="card">
+        <div class="card-header"><i class="fas fa-filter me-2 text-primary"></i>Filter Laporan</div>
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Jenis Laporan</label>
+                    <select class="form-select" id="jenisLaporan">
+                        <option value="semua">Semua Surat</option>
+                        <option value="masuk">Surat Masuk</option>
+                        <option value="keluar">Surat Keluar</option>
+                        <option value="disposisi">Disposisi</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Bulan</label>
+                    <select class="form-select" id="bulan">
+                        <option value="semua">Semua Bulan</option>
+                        <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
+                        <option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option>
+                        <option value="07">Juli</option><option value="08">Agustus</option><option value="09" selected>September</option>
+                        <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Tahun</label>
+                    <select class="form-select" id="tahun">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="statusFilter">
+                        <option value="semua">Semua Status</option>
+                        <option value="Belum Disposisi">Belum Disposisi</option>
+                        <option value="Sudah Disposisi">Sudah Disposisi</option>
+                        <option value="Sudah Dikirim">Sudah Dikirim</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button class="btn btn-primary w-100" onclick="tampilkanLaporan()">
+                        <i class="fas fa-eye me-1"></i> Tampilkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOMBOL UNDUH & CETAK -->
+    <div class="card no-print">
+        <div class="card-header"><i class="fas fa-download me-2 text-primary"></i>Unduh / Cetak</div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-danger" onclick="window.print()">
+                    <i class="fas fa-file-pdf me-2"></i> Cetak / PDF
+                </button>
+                <button class="btn btn-success" onclick="unduhExcel()">
+                    <i class="fas fa-file-excel me-2"></i> Unduh Excel
+                </button>
+                <button class="btn btn-primary" onclick="salinTabel()">
+                    <i class="fas fa-copy me-2"></i> Salin Tabel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREVIEW LAPORAN -->
+    <div class="card">
+        <div class="card-header"><i class="fas fa-file-alt me-2 text-primary"></i>Preview Laporan</div>
+        <div class="card-body laporan-preview" id="previewLaporan">
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-file-csv fa-3x mb-3"></i>
+                <p>Pilih filter lalu klik <strong>Tampilkan</strong> untuk melihat laporan</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const nama = localStorage.getItem('namaPengguna');
+    if (nama) document.getElementById('namaUser').textContent = nama;
+
+    // AMBIL DATA
+    function ambilMasuk() { return JSON.parse(localStorage.getItem('suratMasuk') || '[]'); }
+    function ambilKeluar() { return JSON.parse(localStorage.getItem('suratKeluar') || '[]'); }
+
+    // === TAMPILKAN LAPORAN ===
+    window.tampilkanLaporan = function() {
+        const jenis = document.getElementById('jenisLaporan').value;
+        const bulan = document.getElementById('bulan').value;
+        const tahun = document.getElementById('tahun').value;
+        const status = document.getElementById('statusFilter').value;
+
+        let data = [];
+        if (jenis === 'semua' || jenis === 'masuk') data = data.concat(ambilMasuk());
+        if (jenis === 'semua' || jenis === 'keluar') data = data.concat(ambilKeluar());
+
+        // Filter Status
+        if (status !== 'semua') {
+            data = data.filter(s => s.status === status);
+        }
+
+        const preview = document.getElementById('previewLaporan');
+        if (data.length === 0) {
+            preview.innerHTML = '<div class="text-center text-muted py-5"><i class="fas fa-inbox fa-3x mb-3"></i><p>Tidak ada data sesuai filter</p></div>';
+            return;
+        }
+
+        preview.innerHTML = `
+            <div class="text-center mb-4">
+                <h5 style="font-weight:700;">LAPORAN DATA SURAT</h5>
+                <p class="mb-1">BKPSDM Kabupaten Maluku Tengah</p>
+                <p class="text-muted small">Periode: ${bulan === 'semua' ? 'Semua Bulan' : bulan} / ${tahun} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}</p>
+                <hr>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>No</th>
+                            <th>Nomor Surat</th>
+                            <th>Tanggal</th>
+                            <th>Pengirim/Tujuan</th>
+                            <th>Perihal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map((s, i) => `<tr>
+                            <td>${i+1}</td>
+                            <td>${s.noSurat}</td>
+                            <td>${s.tglSurat || s.tglKirim}</td>
+                            <td>${s.pengirim || s.tujuan}</td>
+                            <td>${s.perihal}</td>
+                            <td>${s.status}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-end mt-3 small">Jumlah Data: <strong>${data.length}</strong> surat</p>
+        `;
+    };
+
+    // === UNDUH EXCEL ===
+    window.unduhExcel = function() {
+        alert('? Fitur unduh Excel: Salin tabel di preview ? buka Excel ? tempel ? simpan!\n\nAtau cetak ke PDF dari preview laporan.');
+        tampilkanLaporan();
+    };
+
+    // === SALIN TABEL ===
+    window.salinTabel = function() {
+        tampilkanLaporan();
+        alert('? Tabel siap disalin! Blok tabel lalu tekan Ctrl+C');
+    };
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', e => {
+        e.preventDefault();
+        if (confirm('Yakin keluar?')) {
+            localStorage.removeItem('namaPengguna');
+            location.href='login.html';
+        }
+    });
+</script>
+</body>
+</html>

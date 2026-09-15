@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan — BKPSDM Kabupaten Maluku Tengah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --biru-tua: #0d47a1;
+            --biru: #1976d2;
+            --abu-lembut: #f5f7fa;
+        }
+        body { background-color: var(--abu-lembut); font-family: 'Segoe UI', Roboto, sans-serif; }
+        .sidebar {
+            background: linear-gradient(180deg, var(--biru-tua) 0%, var(--biru) 100%);
+            min-height: 100vh;
+            position: fixed;
+            top: 0; left: 0; width: 250px; z-index: 100; padding-top: 1rem;
+        }
+        .sidebar-brand {
+            color: white; text-align: center; padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 1rem;
+        }
+        .sidebar-brand i { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .sidebar-brand h5 { font-size: 1rem; font-weight: 700; }
+        .sidebar-brand small { font-size: 0.8rem; opacity: 0.85; }
+        .sidebar-menu { list-style: none; padding: 0 1rem; }
+        .sidebar-menu li { margin-bottom: 0.3rem; }
+        .sidebar-menu a {
+            color: rgba(255,255,255,0.85); display: flex; align-items: center;
+            padding: 0.85rem 1rem; border-radius: 8px; text-decoration: none; transition: all 0.25s;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.2); color: white; }
+        .sidebar-menu a i { width: 24px; margin-right: 0.75rem; text-align: center; }
+        .main-content { margin-left: 250px; padding: 1.5rem 2rem; min-height: 100vh; }
+        .top-nav {
+            background: white; border-radius: 12px; padding: 1rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
+        .card-header { background: white; border-bottom: 1px solid #eee; font-weight: 600; }
+        .btn-primary { background: var(--biru); border-color: var(--biru); }
+        .btn-primary:hover { background: var(--biru-tua); border-color: var(--biru-tua); }
+        .form-label { font-weight: 500; }
+        .setting-section { border-bottom: 1px dashed #ddd; padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+        .setting-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; position: relative; }
+            .main-content { margin-left: 0; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-file-signature"></i>
+        <h5 class="mb-1">BKPSDM</h5>
+        <small>Kabupaten Maluku Tengah</small>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="surat-masuk.html"><i class="fas fa-envelope-open-text"></i> Surat Masuk</a></li>
+        <li><a href="disposisi.html"><i class="fas fa-pen-to-square"></i> Disposisi Surat</a></li>
+        <li><a href="surat-keluar.html"><i class="fas fa-paper-plane"></i> Surat Keluar</a></li>
+        <li><a href="laporan.html"><i class="fas fa-file-excel"></i> Laporan</a></li>
+        <li><a href="arsip.html"><i class="fas fa-archive"></i> Arsip</a></li>
+        <li><hr class="bg-white opacity-25 my-2"></li>
+        <li><a href="pengaturan.html" class="active"><i class="fas fa-cog"></i> Pengaturan</a></li>
+        <li><a href="#" id="btnLogout"><i class="fas fa-right-from-bracket"></i> Keluar</a></li>
+    </ul>
+</aside>
+
+<!-- Konten Utama -->
+<main class="main-content">
+    <div class="top-nav">
+        <div>
+            <h4 class="mb-0 fw-semibold">Pengaturan Sistem</h4>
+            <p class="text-muted small mb-0">Kelola akun & pengaturan aplikasi</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-muted d-none d-md-inline" id="namaUser"></span>
+            <i class="fas fa-user-circle fs-4 text-primary"></i>
+        </div>
+    </div>
+
+    <!-- ?? BAGIAN 1: INFORMASI AKUN -->
+    <div class="card">
+        <div class="card-header"><i class="fas fa-user-circle me-2 text-primary"></i>Informasi Akun</div>
+        <div class="card-body">
+            <form id="formAkun">
+                <div class="setting-section">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" class="form-control" id="namaLengkap" placeholder="Masukkan nama lengkap">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Jabatan / Peran</label>
+                            <select class="form-select" id="peranPengguna">
+                                <option value="Admin">Administrator</option>
+                                <option value="Pimpinan">Pimpinan / Kepala Dinas</option>
+                                <option value="Sekretaris">Sekretaris</option>
+                                <option value="Kepala Bidang">Kepala Bidang</option>
+                                <option value="Staf">Staf / Operator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Username login">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="email@bkpsdm.go.id">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="simpanAkun()">
+                        <i class="fas fa-save me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+            <!-- ?? BAGIAN 2: UBAH PASSWORD -->
+            <div class="setting-section">
+                <h6 class="fw-semibold text-danger mb-3"><i class="fas fa-key me-2"></i>Ubah Kata Sandi</h6>
+                <form id="formPassword">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Kata Sandi Lama</label>
+                            <input type="password" class="form-control" id="passLama" placeholder="Masukkan sandi lama">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Kata Sandi Baru</label>
+                            <input type="password" class="form-control" id="passBaru" placeholder="Minimal 6 karakter">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Konfirmasi Sandi Baru</label>
+                            <input type="password" class="form-control" id="passKonfirmasi" placeholder="Ulangi sandi baru">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-warning text-dark" onclick="ubahPassword()">
+                        <i class="fas fa-lock me-1"></i> Ubah Kata Sandi
+                    </button>
+                </form>
+            </div>
+
+            <!-- ?? BAGIAN 3: PENGATURAN SISTEM -->
+            <div class="setting-section">
+                <h6 class="fw-semibold text-primary mb-3"><i class="fas fa-cogs me-2"></i>Pengaturan Umum</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nama Instansi</label>
+                        <input type="text" class="form-control" id="namaInstansi" value="BKPSDM Kabupaten Maluku Tengah">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Format Penomoran Surat</label>
+                        <select class="form-select">
+                            <option>Nomor/Bulan/Tahun</option>
+                            <option>Nomor/Bulan/Tahun/Kode</option>
+                            <option>Nomor-Tahun-Bagian</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" id="notifEmail" checked>
+                            <label class="form-check-label" for="notifEmail">Notifikasi Email</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" id="notifSistem" checked>
+                            <label class="form-check-label" for="notifSistem">Notifikasi Sistem</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="simpanPengaturan()">
+                    <i class="fas fa-cog me-1"></i> Simpan Pengaturan
+                </button>
+            </div>
+
+            <!-- ? BAGIAN 4: SISTEM & KELUAR -->
+            <div class="setting-section">
+                <h6 class="fw-semibold text-secondary mb-3"><i class="fas fa-info-circle me-2"></i>Informasi Sistem</h6>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Versi Aplikasi</strong></p>
+                        <p class="text-muted">v1.0.0 — 08 September 2026</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Pengguna Saat Ini</strong></p>
+                        <p class="text-muted" id="infoPengguna">-</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1"><strong>Instansi</strong></p>
+                        <p class="text-muted">BKPSDM Kab. Maluku Tengah</p>
+                    </div>
+                </div>
+                
+                <hr class="my-3">
+                
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-danger" onclick="if(confirm('Yakin ingin menghapus data sementara?')){alert('? Data sementara dibersihkan!');}">
+                        <i class="fas fa-broom me-1"></i> Bersihkan Cache
+                    </button>
+                    <button class="btn btn-danger" id="btnLogout2">
+                        <i class="fas fa-right-from-bracket me-1"></i> Keluar dari Sistem
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // === TAMPILKAN NAMA PENGGUNA ===
+    const nama = localStorage.getItem('namaPengguna') || 'Pengguna';
+    document.getElementById('namaUser').textContent = nama;
+    document.getElementById('infoPengguna').textContent = nama;
+    document.getElementById('namaLengkap').value = nama;
+
+    // === SIMPAN INFORMASI AKUN ===
+    function simpanAkun() {
+        localStorage.setItem('namaPengguna', document.getElementById('namaLengkap').value);
+        alert('? Informasi akun berhasil disimpan!');
+        location.reload();
+    }
+
+    // === UBAH PASSWORD ===
+    function ubahPassword() {
+        const lama = document.getElementById('passLama').value;
+        const baru = document.getElementById('passBaru').value;
+        const konfirm = document.getElementById('passKonfirmasi').value;
+        
+        if (!lama || !baru || !konfirm) {
+            alert('?? Lengkapi semua kolom kata sandi!');
+            return;
+        }
+        if (baru !== konfirm) {
+            alert('?? Kata sandi baru tidak cocok dengan konfirmasi!');
+            return;
+        }
+        if (baru.length < 6) {
+            alert('?? Kata sandi baru minimal 6 karakter!');
+            return;
+        }
+        alert('? Kata sandi berhasil diubah!');
+        document.getElementById('formPassword').reset();
+    }
+
+    // === SIMPAN PENGATURAN ===
+    function simpanPengaturan() {
+        alert('? Pengaturan sistem berhasil disimpan!');
+    }
+
+    // === FUNGSI LOGOUT — DI SINI & DI BAWAH ===
+    function keluarSistem() {
+        if (confirm('?? Yakin ingin keluar dari sistem?\n\nSemua perubahan yang belum disimpan akan hilang!')) {
+            localStorage.removeItem('namaPengguna');
+            localStorage.removeItem('peranPengguna');
+            window.location.href = 'login.html';
+        }
+    }
+
+    // Tombol Logout di sidebar
+    document.getElementById('btnLogout').addEventListener('click', function(e) {
+        e.preventDefault();
+        keluarSistem();
+    });
+
+    // Tombol Logout di bagian bawah
+    document.getElementById('btnLogout2').addEventListener('click', function() {
+        keluarSistem();
+    });
+</script>
+
+</body>
+</html>

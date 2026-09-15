@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip — BKPSDM Kabupaten Maluku Tengah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --biru-tua: #0d47a1; --biru: #1976d2; --abu-lembut: #f5f7fa; }
+        body { background-color: var(--abu-lembut); font-family: 'Segoe UI', Roboto, sans-serif; }
+        .sidebar { background: linear-gradient(180deg, var(--biru-tua) 0%, var(--biru) 100%); min-height: 100vh; position: fixed; top:0; left:0; width:250px; z-index:100; padding-top:1rem; }
+        .sidebar-brand { color: white; text-align: center; padding:1rem; border-bottom:1px solid rgba(255,255,255,0.2); }
+        .sidebar-brand i { font-size:1.8rem; }
+        .sidebar-brand h5 { font-size:1rem; font-weight:700; }
+        .sidebar-menu { list-style:none; padding:0 1rem; }
+        .sidebar-menu a { color:rgba(255,255,255,0.85); display:flex; align-items:center; padding:0.85rem 1rem; border-radius:8px; text-decoration:none; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background:rgba(255,255,255,0.2); color:white; }
+        .main-content { margin-left:250px; padding:1.5rem 2rem; min-height:100vh; }
+        .top-nav { background:white; border-radius:12px; padding:1rem 1.5rem; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+        .card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; }
+        .card-header { background:white; border-bottom:1px solid #eee; font-weight:600; }
+        .btn-primary { background:var(--biru); border-color:var(--biru); }
+        .btn-primary:hover { background:var(--biru-tua); border-color:var(--biru-tua); }
+        .badge { padding:0.35rem 0.65rem; font-weight:500; }
+        .nav-tabs .nav-link.active { color:var(--biru); border-bottom:3px solid var(--biru); font-weight:600; }
+        .modal-header { background:var(--biru); color:white; }
+        .info-box { background:#e3f2fd; border-left:4px solid var(--biru); padding:0.75rem; border-radius:6px; margin-bottom:1rem; }
+        @media (max-width:768px) { .sidebar { width:100%; position:relative; } .main-content { margin-left:0; padding:1rem; } }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-file-signature"></i>
+        <h5 class="mb-1">BKPSDM</h5>
+        <small>Kabupaten Maluku Tengah</small>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="surat-masuk.html"><i class="fas fa-envelope-open-text"></i> Surat Masuk</a></li>
+        <li><a href="disposisi.html"><i class="fas fa-pen-to-square"></i> Disposisi Surat</a></li>
+        <li><a href="surat-keluar.html"><i class="fas fa-paper-plane"></i> Surat Keluar</a></li>
+        <li><a href="laporan.html"><i class="fas fa-file-excel"></i> Laporan</a></li>
+        <li><a href="arsip.html" class="active"><i class="fas fa-archive"></i> Arsip</a></li>
+        <li><hr class="bg-white opacity-25 my-2"></li>
+        <li><a href="pengaturan.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+        <li><a href="#" id="btnLogout"><i class="fas fa-right-from-bracket"></i> Keluar</a></li>
+    </ul>
+</aside>
+
+<main class="main-content">
+    <div class="top-nav">
+        <div><h4 class="mb-0 fw-semibold">Arsip Surat</h4><p class="text-muted small mb-0">BKPSDM Kabupaten Maluku Tengah — Penyimpanan & pencarian arsip surat</p></div>
+        <div class="d-flex align-items-center gap-2"><span class="text-muted d-none d-md-inline" id="namaUser"></span><i class="fas fa-user-circle fs-4 text-primary"></i></div>
+    </div>
+
+    <div class="info-box">
+        <i class="fab fa-google-drive me-2 text-primary"></i>
+        <strong>?? Dokumen dari Google Drive:</strong> Klik tombol <strong>PDF</strong> ? Langsung terbuka di tab baru! Bisa dibuka dari mana saja!
+    </div>
+
+    <div class="card">
+        <div class="card-header"><i class="fas fa-filter me-2 text-primary"></i>Pencarian & Filter Arsip</div>
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Jenis Surat</label>
+                    <select class="form-select" id="filterJenis">
+                        <option value="semua">Semua Jenis</option>
+                        <option value="masuk">Surat Masuk</option>
+                        <option value="keluar">Surat Keluar</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Tahun</label>
+                    <select class="form-select" id="filterTahun">
+                        <option value="semua">Semua Tahun</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Kata Kunci</label>
+                    <input type="text" class="form-control" id="kataKunci" placeholder="Nomor, perihal, pengirim...">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button class="btn btn-primary w-100" onclick="cariArsip()"><i class="fas fa-search"></i> Cari</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header p-0">
+            <ul class="nav nav-tabs px-3 pt-3" id="arsipTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="semua-tab" data-bs-toggle="tab" data-bs-target="#semua" type="button" role="tab">
+                        <i class="fas fa-list me-1"></i> Semua Arsip
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk" type="button" role="tab">
+                        <i class="fas fa-inbox me-1"></i> Surat Masuk (<span id="jumlahMasuk">0</span>)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar" type="button" role="tab">
+                        <i class="fas fa-paper-plane me-1"></i> Surat Keluar (<span id="jumlahKeluar">0</span>)
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="tab-content" id="arsipTabContent">
+                <div class="tab-pane fade show active" id="semua" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>No</th><th>Jenis</th><th>Nomor Surat</th><th>Tanggal</th><th>Pengirim/Tujuan</th><th>Perihal</th><th>Status</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody id="tabelSemua"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="masuk" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>No</th><th>Nomor Surat</th><th>Tanggal</th><th>Pengirim</th><th>Perihal</th><th>Status</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody id="tabelMasuk"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="keluar" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>No</th><th>Nomor Surat</th><th>Tanggal</th><th>Tujuan</th><th>Perihal</th><th>Status</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody id="tabelKeluar"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel"><i class="fas fa-file-alt me-2"></i>Detail Surat</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <a id="linkUnduhModal" class="btn btn-success" href="#" target="_blank">
+                    <i class="fas fa-external-link-alt me-1"></i> Buka Dokumen
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const nama = localStorage.getItem('namaPengguna');
+    if (nama) document.getElementById('namaUser').textContent = nama;
+
+    function ambilSuratMasuk() { return JSON.parse(localStorage.getItem('suratMasuk') || '[]'); }
+    function ambilSuratKeluar() { return JSON.parse(localStorage.getItem('suratKeluar') || '[]'); }
+
+    function updateJumlah() {
+        document.getElementById('jumlahMasuk').textContent = ambilSuratMasuk().length;
+        document.getElementById('jumlahKeluar').textContent = ambilSuratKeluar().length;
+    }
+
+    function badgeStatus(status) {
+        const map = {
+            'Belum Disposisi': 'bg-warning text-dark',
+            'Sudah Disposisi': 'bg-success',
+            'Draf': 'bg-secondary',
+            'Tertanda': 'bg-primary',
+            'Sudah Dikirim': 'bg-success'
+        };
+        return `<span class="badge ${map[status] || 'bg-secondary'}">${status || '-'}</span>`;
+    }
+
+    window.bukaDokumen = function(link) {
+        if (!link || link.trim() === '') {
+            alert('?? Tidak ada dokumen.\nUnggah ke Google Drive ? Salin link ? Simpan di Surat Masuk/Keluar');
+            return;
+        }
+        window.open(link, '_blank');
+    };
+
+    window.lihatDetail = function(index, jenis) {
+        const surat = jenis === 'masuk' ? ambilSuratMasuk()[index] : ambilSuratKeluar()[index];
+        if (!surat) return;
+        
+        let html = `<div class="row mb-2"><div class="col-md-4 fw-bold">Nomor Surat</div><div class="col-md-8">: ${surat.noSurat || '-'}</div></div>`;
+        html += `<div class="row mb-2"><div class="col-md-4 fw-bold">Tanggal</div><div class="col-md-8">: ${surat.tglSurat || '-'}</div></div>`;
+        if (jenis === 'masuk') {
+            html += `<div class="row mb-2"><div class="col-md-4 fw-bold">Pengirim</div><div class="col-md-8">: ${surat.pengirim || '-'}</div></div>`;
+        } else {
+            html += `<div class="row mb-2"><div class="col-md-4 fw-bold">Tujuan</div><div class="col-md-8">: ${surat.tujuan || '-'}</div></div>`;
+        }
+        html += `<div class="row mb-2"><div class="col-md-4 fw-bold">Perihal</div><div class="col-md-8">: ${surat.perihal || '-'}</div></div>`;
+        html += `<div class="row mb-2"><div class="col-md-4 fw-bold">Status</div><div class="col-md-8">: ${badgeStatus(surat.status)}</div></div>`;
+        
+        const linkDok = surat.dokumen || '';
+        const linkBtn = document.getElementById('linkUnduhModal');
+        if (linkDok) {
+            html += `<hr><div class="alert alert-info"><i class="fab fa-google-drive me-2"></i><strong>Dokumen tersimpan!</strong> Klik tombol di bawah untuk membuka.</div>`;
+            linkBtn.href = linkDok;
+            linkBtn.style.display = 'inline-block';
+        } else {
+            html += `<hr><div class="alert alert-secondary"><i class="fas fa-info-circle me-2"></i>Belum ada dokumen yang ditautkan.</div>`;
+            linkBtn.style.display = 'none';
+        }
+        
+        document.getElementById('modalBody').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('modalDetail')).show();
+    };
+
+    function tampilkanSemua() {
+        const masuk = ambilSuratMasuk(), keluar = ambilSuratKeluar();
+        const tbody = document.getElementById('tabelSemua');
+        tbody.innerHTML = '';
+        
+        if (masuk.length === 0 && keluar.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Belum ada arsip surat.<br><small>Tambahkan surat di Surat Masuk atau Surat Keluar terlebih dahulu.</small></td></tr>';
+            return;
+        }
+        
+        let no = 1;
+        masuk.forEach((s, i) => {
+            const adaFile = s.dokumen && s.dokumen.trim() !== '';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${no++}</td>
+                    <td><span class="badge bg-info text-dark">Masuk</span></td>
+                    <td>${s.noSurat}</td>
+                    <td>${s.tglSurat}</td>
+                    <td>${s.pengirim}</td>
+                    <td>${s.perihal}</td>
+                    <td>${badgeStatus(s.status)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail(${i}, 'masuk')"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm ${adaFile ? 'btn-outline-success' : 'btn-outline-secondary'}" 
+                                onclick="bukaDokumen('${s.dokumen || ''}')" ${!adaFile ? 'disabled' : ''}>
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                    </td>
+                </tr>`;
+        });
+        keluar.forEach((s, i) => {
+            const adaFile = s.dokumen && s.dokumen.trim() !== '';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${no++}</td>
+                    <td><span class="badge bg-primary">Keluar</span></td>
+                    <td>${s.noSurat}</td>
+                    <td>${s.tglSurat}</td>
+                    <td>${s.tujuan}</td>
+                    <td>${s.perihal}</td>
+                    <td>${badgeStatus(s.status)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail(${i}, 'keluar')"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm ${adaFile ? 'btn-outline-success' : 'btn-outline-secondary'}" 
+                                onclick="bukaDokumen('${s.dokumen || ''}')" ${!adaFile ? 'disabled' : ''}>
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function tampilkanMasuk() {
+        const daftar = ambilSuratMasuk();
+        const tbody = document.getElementById('tabelMasuk');
+        tbody.innerHTML = '';
+        if (daftar.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada surat masuk</td></tr>';
+            return;
+        }
+        daftar.forEach((s, i) => {
+            const adaFile = s.dokumen && s.dokumen.trim() !== '';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${s.noSurat}</td>
+                    <td>${s.tglSurat}</td>
+                    <td>${s.pengirim}</td>
+                    <td>${s.perihal}</td>
+                    <td>${badgeStatus(s.status)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail(${i}, 'masuk')"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm ${adaFile ? 'btn-outline-success' : 'btn-outline-secondary'}" 
+                                onclick="bukaDokumen('${s.dokumen || ''}')" ${!adaFile ? 'disabled' : ''}>
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function tampilkanKeluar() {
+        const daftar = ambilSuratKeluar();
+        const tbody = document.getElementById('tabelKeluar');
+        tbody.innerHTML = '';
+        if (daftar.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada surat keluar</td></tr>';
+            return;
+        }
+        daftar.forEach((s, i) => {
+            const adaFile = s.dokumen && s.dokumen.trim() !== '';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${s.noSurat}</td>
+                    <td>${s.tglSurat}</td>
+                    <td>${s.tujuan}</td>
+                    <td>${s.perihal}</td>
+                    <td>${badgeStatus(s.status)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail(${i}, 'keluar')"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm ${adaFile ? 'btn-outline-success' : 'btn-outline-secondary'}" 
+                                onclick="bukaDokumen('${s.dokumen || ''}')" ${!adaFile ? 'disabled' : ''}>
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    window.cariArsip = function() {
+        const jenis = document.getElementById('filterJenis').value;
+        const tahun = document.getElementById('filterTahun').value;
+        const kata = document.getElementById('kataKunci').value.toLowerCase();
+        let hasil = [];
+        
+        if (jenis === 'semua' || jenis === 'masuk') {
+            ambilSuratMasuk().forEach((s, idx) => {
+                const cocokTahun = tahun === 'semua' || s.tglSurat.startsWith(tahun);
+                const cocokKata = kata === '' || s.noSurat.toLowerCase().includes(kata) || s.pengirim.toLowerCase().includes(kata) || s.perihal.toLowerCase().includes(kata);
+                if (cocokTahun && cocokKata) hasil.push({...s, jenis: 'masuk', idx});
+            });
+        }
+        if (jenis === 'semua' || jenis === 'keluar') {
+            ambilSuratKeluar().forEach((s, idx) => {
+                const cocokTahun = tahun === 'semua' || s.tglSurat.startsWith(tahun);
+                const cocokKata = kata === '' || s.noSurat.toLowerCase().includes(kata) || s.tujuan.toLowerCase().includes(kata) || s.perihal.toLowerCase().includes(kata);
+                if (cocokTahun && cocokKata) hasil.push({...s, jenis: 'keluar', idx});
+            });
+        }
+        
+        const tbody = document.getElementById('tabelSemua');
+        tbody.innerHTML = '';
+        if (hasil.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-3">Tidak ada surat yang sesuai</td></tr>';
+            return;
+        }
+        hasil.forEach((s, i) => {
+            const badgeJenis = s.jenis === 'masuk' 
+                ? '<span class="badge bg-info text-dark">Masuk</span>' 
+                : '<span class="badge bg-primary">Keluar</span>';
+            const pihak = s.jenis === 'masuk' ? s.pengirim : s.tujuan;
+            const adaFile = s.dokumen && s.dokumen.trim() !== '';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${badgeJenis}</td>
+                    <td>${s.noSurat}</td>
+                    <td>${s.tglSurat}</td>
+                    <td>${pihak}</td>
+                    <td>${s.perihal}</td>
+                    <td>${badgeStatus(s.status)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail(${s.idx}, '${s.jenis}')"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm ${adaFile ? 'btn-outline-success' : 'btn-outline-secondary'}" 
+                                onclick="bukaDokumen('${s.dokumen || ''}')" ${!adaFile ? 'disabled' : ''}>
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                    </td>
+                </tr>`;
+        });
+    };
+
+    document.getElementById('btnLogout').addEventListener('click', e => {
+        e.preventDefault();
+        if (confirm('Yakin ingin keluar?')) {
+            localStorage.removeItem('namaPengguna');
+            location.href = 'login.html';
+        }
+    });
+
+    updateJumlah();
+    tampilkanSemua();
+    tampilkanMasuk();
+    tampilkanKeluar();
+</script>
+</body>
+</html>

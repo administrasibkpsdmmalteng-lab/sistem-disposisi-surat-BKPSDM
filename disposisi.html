@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disposisi Surat — BKPSDM Kabupaten Maluku Tengah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --biru-tua: #0d47a1; --biru: #1976d2; }
+        body { background: #f5f7fa; font-family: 'Segoe UI', Roboto, sans-serif; }
+        .sidebar { background: linear-gradient(180deg, #0d47a1 0%, #1976d2 100%); min-height: 100vh; position: fixed; top:0; left:0; width:250px; z-index:100; padding-top:1rem; }
+        .sidebar-brand { color: white; text-align: center; padding:1rem; border-bottom:1px solid rgba(255,255,255,0.2); }
+        .sidebar-brand i { font-size:1.8rem; }
+        .sidebar-menu { list-style:none; padding:0 1rem; }
+        .sidebar-menu a { color:rgba(255,255,255,0.85); display:flex; align-items:center; padding:0.85rem 1rem; border-radius:8px; text-decoration:none; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background:rgba(255,255,255,0.2); color:white; }
+        .main-content { margin-left:250px; padding:1.5rem 2rem; }
+        .top-nav { background:white; border-radius:12px; padding:1rem 1.5rem; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+        .card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:1.5rem; }
+        .card-header { background:white; border-bottom:1px solid #eee; font-weight:600; }
+        .btn-primary { background:#1976d2; border-color:#1976d2; }
+        .btn-primary:hover { background:#0d47a1; border-color:#0d47a1; }
+        .disposisi-box { border:2px solid #ddd; border-radius:8px; padding:1.25rem; margin-bottom:1rem; background:#fdfdfd; }
+        .disposisi-title { background:#1976d2; color:white; padding:0.75rem 1.25rem; border-radius:6px; margin:-1.25rem -1.25rem 1rem -1.25rem; font-weight:600; }
+        @media (max-width:768px) { .sidebar { width:100%; position:relative; } .main-content { margin-left:0; padding:1rem; } }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-file-signature"></i>
+        <h5 class="mb-1">BKPSDM</h5>
+        <small>Kabupaten Maluku Tengah</small>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="surat-masuk.html"><i class="fas fa-envelope-open-text"></i> Surat Masuk</a></li>
+        <li><a href="disposisi.html" class="active"><i class="fas fa-pen-to-square"></i> Disposisi Surat</a></li>
+        <li><a href="surat-keluar.html"><i class="fas fa-paper-plane"></i> Surat Keluar</a></li>
+        <li><a href="laporan.html"><i class="fas fa-file-excel"></i> Laporan</a></li>
+        <li><a href="arsip.html"><i class="fas fa-archive"></i> Arsip</a></li>
+        <li><hr class="bg-white opacity-25 my-2"></li>
+        <li><a href="pengaturan.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+        <li><a href="#" id="btnLogout"><i class="fas fa-right-from-bracket"></i> Keluar</a></li>
+    </ul>
+</aside>
+
+<main class="main-content">
+    <div class="top-nav">
+        <div><h4 class="mb-0 fw-semibold">Lembar Disposisi Surat</h4><p class="text-muted small mb-0">BKPSDM Kabupaten Maluku Tengah</p></div>
+        <div class="d-flex align-items-center gap-2"><span class="text-muted" id="namaUser"></span><i class="fas fa-user-circle fs-4 text-primary"></i></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><i class="fas fa-search me-2 text-primary"></i>Pilih Surat yang Akan Didisposisi</div>
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label">Daftar Surat Masuk (Belum Disposisi)</label>
+                    <select class="form-select" id="pilihSurat" onchange="tampilkanDataSurat()">
+                        <option value="">-- Pilih Surat --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100" onclick="tampilkanDataSurat()">
+                        <i class="fas fa-eye me-1"></i> Tampilkan Surat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="lembarDisposisi" style="display:none;">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-file-pen me-2 text-primary"></i>LEMBAR DISPOSISI — BKPSDM Kabupaten Maluku Tengah</span>
+            <div>
+                <button class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
+                <a href="surat-masuk.html" class="btn btn-sm btn-outline-primary"><i class="fas fa-arrow-left"></i> Kembali</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="disposisi-box">
+                <div class="disposisi-title">?? Identitas Surat</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless table-sm">
+                            <tr><th width="140">Nomor Surat</th><td>: <span id="d_noSurat"></span></td></tr>
+                            <tr><th>Tanggal Surat</th><td>: <span id="d_tglSurat"></span></td></tr>
+                            <tr><th>Pengirim</th><td>: <span id="d_pengirim"></span></td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless table-sm">
+                            <tr><th width="140">Perihal</th><td>: <span id="d_perihal"></span></td></tr>
+                            <tr><th>Tujuan Asal</th><td>: <span id="d_tujuanAsal"></span></td></tr>
+                            <tr><th>Sifat</th><td>: <span id="d_sifat"></span></td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <form id="formDisposisi">
+            <div class="disposisi-box">
+                <div class="disposisi-title">?? Isi Disposisi</div>
+                <input type="hidden" id="indexSurat">
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Tujuan Disposisi *</label>
+                        <select class="form-select" id="tujuanDisposisi" required>
+                            <option value="">-- Pilih Bagian --</option>
+                            <option value="Sekretariat">Sekretariat</option>
+                            <option value="Bidang Pengadaan, Pemberhentian dan Informasi">Bidang Pengadaan, Pemberhentian dan Informasi</option>
+                            <option value="Bidang Mutasi dan Promosi">Bidang Mutasi dan Promosi</option>
+                            <option value="Bidang Pengembangan Aparatur">Bidang Pengembangan Aparatur</option>
+                            <option value="Bidang Penilaian Kinerja Aparatur dan Penghargaan">Bidang Penilaian Kinerja Aparatur dan Penghargaan</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Batas Waktu</label>
+                        <input type="date" class="form-control" id="batasWaktu">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Instruksi / Catatan Pimpinan *</label>
+                    <textarea class="form-control" id="isiDisposisi" rows="4" required placeholder="Tuliskan instruksi disposisi..."></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="form-label fw-semibold">Prioritas</label>
+                    <div class="d-flex gap-3">
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="prioritas" value="Biasa"><label class="form-check-label">Biasa</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="prioritas" value="Segera" checked><label class="form-check-label">Segera</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="prioritas" value="Sangat Segera"><label class="form-check-label">Sangat Segera</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="prioritas" value="Rahasia"><label class="form-check-label">Rahasia</label></div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 pt-3 border-top">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Disposisi Oleh:</label>
+                        <input type="text" class="form-control" id="namaPimpinan" placeholder="Nama Pimpinan">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Tanggal Disposisi</label>
+                        <input type="date" class="form-control" id="tglDisposisi">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-primary px-5"><i class="fas fa-paper-plane me-2"></i>SIMPAN & KIRIM DISPOSISI</button>
+                <button type="reset" class="btn btn-outline-secondary px-4"><i class="fas fa-eraser me-2"></i> Reset</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const nama = localStorage.getItem('namaPengguna');
+    if (nama) document.getElementById('namaUser').textContent = nama;
+    document.getElementById('tglDisposisi').valueAsDate = new Date();
+
+    // === AMBIL DATA SURAT MASUK DAN ISI KE DAFTAR PILIHAN ===
+    function ambilDataSurat() {
+        return JSON.parse(localStorage.getItem('suratMasuk') || '[]');
+    }
+    function simpanDataSurat(data) {
+        localStorage.setItem('suratMasuk', JSON.stringify(data));
+    }
+
+    // Isi pilihan surat saat halaman dibuka
+    function muatDaftarSurat() {
+        const daftar = ambilDataSurat();
+        const select = document.getElementById('pilihSurat');
+        select.innerHTML = '<option value="">-- Pilih Surat --</option>';
+        daftar.forEach((surat, index) => {
+            if (surat.status === 'Belum Disposisi') {
+                select.innerHTML += `<option value="${index}">${surat.noSurat} — ${surat.perihal} (${surat.pengirim})</option>`;
+            }
+        });
+    }
+
+    // === TAMPILKAN DATA SURAT YANG DIPILIH ===
+    window.tampilkanDataSurat = function() {
+        const index = document.getElementById('pilihSurat').value;
+        if (index === '') {
+            document.getElementById('lembarDisposisi').style.display = 'none';
+            return;
+        }
+        const daftar = ambilDataSurat();
+        const surat = daftar[index];
+        
+        document.getElementById('d_noSurat').textContent = surat.noSurat;
+        document.getElementById('d_tglSurat').textContent = surat.tglSurat;
+        document.getElementById('d_pengirim').textContent = surat.pengirim;
+        document.getElementById('d_perihal').textContent = surat.perihal;
+        document.getElementById('d_tujuanAsal').textContent = surat.tujuan;
+        document.getElementById('d_sifat').textContent = surat.sifat;
+        document.getElementById('indexSurat').value = index;
+        
+        document.getElementById('lembarDisposisi').style.display = 'block';
+        document.getElementById('lembarDisposisi').scrollIntoView({behavior:'smooth'});
+    };
+
+    // === SIMPAN DISPOSISI & UPDATE STATUS SURAT ===
+    document.getElementById('formDisposisi').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const index = parseInt(document.getElementById('indexSurat').value);
+        const daftar = ambilDataSurat();
+        
+        const disposisi = {
+            tujuan: document.getElementById('tujuanDisposisi').value,
+            instruksi: document.getElementById('isiDisposisi').value,
+            batasWaktu: document.getElementById('batasWaktu').value,
+            prioritas: document.querySelector('input[name="prioritas"]:checked').value,
+            pimpinan: document.getElementById('namaPimpinan').value,
+            tglDisposisi: document.getElementById('tglDisposisi').value
+        };
+
+        daftar[index].disposisi = disposisi;
+        daftar[index].status = 'Sudah Disposisi';
+        simpanDataSurat(daftar);
+
+        alert('? DISPOSISI BERHASIL DISIMPAN!\n\nSurat: ' + daftar[index].noSurat + '\nTujuan: ' + disposisi.tujuan + '\nStatus: Sudah Disposisi');
+        
+        this.reset();
+        document.getElementById('lembarDisposisi').style.display = 'none';
+        muatDaftarSurat();
+    });
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', e => {
+        e.preventDefault();
+        if (confirm('Yakin keluar?')) {
+            localStorage.removeItem('namaPengguna');
+            location.href='login.html';
+        }
+    });
+
+    // Muat daftar surat saat halaman dibuka
+    muatDaftarSurat();
+</script>
+</body>
+</html>
